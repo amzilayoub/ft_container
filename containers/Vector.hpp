@@ -41,12 +41,12 @@ class VectorIterator
 			return (*this);
 		}
 
-		reference &operator*()
+		reference operator*()
 		{
 			return ((*this->array));
 		}
 
-		const_reference &operator*() const
+		const_reference operator*() const
 		{
 			return ((*this->array));
 		}
@@ -195,32 +195,32 @@ class Vector
 
 		iterator end()
 		{
-			return (iterator(&this->array[this->array_capacity]));
+			return (iterator(&this->array[this->array_size]));
 		}
 
 		const_iterator end() const
 		{
-			return (const_iterator(&this->array[this->array_capacity]));
+			return (const_iterator(&this->array[this->array_size]));
 		}
 
 		reverse_iterator rbegin()
 		{
-			return (reverse_iterator(&this->array[this->array_capacity]));
+			return (reverse_iterator(&this->array[this->array_size]));
 		}
 
 		const_reverse_iterator rbegin() const
 		{
-			return (const_reverse_iterator(&this->array[this->array_capacity]));
+			return (const_reverse_iterator(&this->array[this->array_size]));
 		}
 
 		reverse_iterator rend()
 		{
-			return (reverse_iterator(&this->array[this->array_capacity]));
+			return (reverse_iterator(this->array));
 		}
 
 		const_reverse_iterator rend() const
 		{
-			return (const_reverse_iterator(&this->array[this->array_capacity]));
+			return (const_reverse_iterator(this->array));
 		}
 
 	// Capacity Member Functions
@@ -377,6 +377,50 @@ class Vector
 			this->array[this->array_size] = static_cast<value_type>(NULL);
 		}
 		//INSERT
+		iterator insert(iterator position, const value_type& val)
+		{
+			size_type j = this->array_capacity;
+			while (position.getArray() != (&this->array[j]) && j != 0)
+				--j;
+			if (this->array_size >= this->array_capacity)
+				this->resize(this->array_capacity + 1);
+			size_type i = this->array_capacity;
+			while (j < i)
+			{
+				this->array[i] = this->array[i - 1];
+				--i;
+			}
+			this->array[i] = val;
+			this->array_size = 1 + ((i > this->array_size) ? i : this->array_size);
+			return (iterator(&this->array[i]));
+		}
+
+		// Not finished yet
+		void insert (iterator position, size_type n, const value_type& val)
+		{
+			size_type j = this->array_capacity;
+			while (position.getArray() != (&this->array[j]) && j != 0)
+				--j;
+			if (j + n >= this->array_capacity)
+				this->resize(j + n);
+			else if (this->array_size + n >= this->array_capacity)
+				this->resize(this->array_size + n);
+			size_type lastIndex = this->array_size + n - 1;
+			size_type curIndex = this->array_size - 1;
+			while (j <= curIndex)
+			{
+				this->array[lastIndex] = this->array[curIndex];
+				--lastIndex;
+				--curIndex;
+			}
+			while (j <= lastIndex)
+			{
+				this->array[j] = val;
+				++j;
+			}
+			--j;
+			this->array_size = ((j > this->array_size) ? j : this->array_size + n);
+		}
 
 		iterator erase (iterator position)
 		{
