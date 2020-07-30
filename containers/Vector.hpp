@@ -537,49 +537,53 @@ class Vector
 		}
 };
 
-template<T>
-bool &operator==(Vector<T> const &lhs, Vector<T> const &rhs)
+template<class T>
+bool operator==(Vector<T> const &lhs, Vector<T> const &rhs)
 {
 	if (lhs.size() != rhs.size())
 		return (false);
-	for (int i = 0; i < lhs.size(); i++)
+	typename Vector<T>::iterator leftIt = lhs.begin();
+	typename Vector<T>::iterator rightIt = rhs.begin();
+	for (; leftIt < lhs.end(); leftIt++, rightIt++)
 	{
-		if (lhs.array[i] != rhs.array[i])
+		if ((*leftIt) != (*rightIt))
 			return (false);
 	}
 	return (true);
 }
 
-template<T>
-bool &operator<(Vector<T> const &lhs, Vector<T> const &rhs)
+template<class T>
+bool operator<(Vector<T> const &lhs, Vector<T> const &rhs)
 {
-	for (int i = 0; i < lhs.size() && i < rhs.size(); i++)
+	typename Vector<T>::iterator leftIt = lhs.begin();
+	typename Vector<T>::iterator rightIt = rhs.begin();
+	for (; leftIt != lhs.end() && rightIt != rhs.end(); leftIt++, rightIt++)
 	{
-		if (lhs.array[i] < rhs.array[i])
+		if ((*leftIt) < (*rightIt))
 			return (true);
 	}
 	return (false);
 }
 
-template<T>
-bool &operator<=(Vector<T> const &lhs, Vector<T> const &rhs)
+template<class T>
+bool operator<=(Vector<T> const &lhs, Vector<T> const &rhs)
 {
 	return (!(rhs < lhs));
 }
 
-template<T>
-bool &operator>(Vector<T> const &lhs, Vector<T> const &rhs)
+template<class T>
+bool operator>(Vector<T> const &lhs, Vector<T> const &rhs)
 {
 	return (rhs < lhs);
 }
 
-template<T>
-bool &operator>=(Vector<T> const &lhs, Vector<T> const &rhs)
+template<class T>
+bool operator>=(Vector<T> const &lhs, Vector<T> const &rhs)
 {
 	return (!(lhs < rhs));
 }
 
-template<T>
+template<class T>
 void swap(Vector<T> &x, Vector<T> &y)
 {
 	x.swap(y);

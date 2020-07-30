@@ -71,5 +71,10 @@ int main()
 		std::cout << "VV = " << (*it) << std::endl;
 		it++;
 	}
+	std::cout << "== " << (vv == assigned) << std::endl;
+	std::cout << "< " << (vv < assigned) << std::endl;
+	std::cout << "<= " << (vv <= assigned) << std::endl;
+	std::cout << ">= " << (vv >= assigned) << std::endl;
+	std::cout << "> " << (vv > assigned) << std::endl;
 }
 
