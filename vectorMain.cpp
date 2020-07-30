@@ -39,15 +39,16 @@ int main()
 	std::cout << "EMPTY = " << vv.empty() << std::endl;
 	std::cout << "SIZE = " << vv.size() << std::endl;
 	std::cout << "MAX_SIZE = " << vv.max_size() << std::endl;
-	ft::Vector<int> assigned;
-	assigned.assign(vv.begin(), vv.end());
+	ft::Vector<int> assigned(vv);
+	//assigned.assign(vv.begin(), vv.end());
 	//assigned.pop_back();
 	//it = assigned.erase(assigned.end() - 1);
 	it = assigned.begin();
 	assigned.push_back(90);
 	assigned.push_back(90);
 	//it = assigned.insert(assigned.begin(), 50000);
-	assigned.insert(assigned.begin(), 5, 50000);
+	//assigned.insert(assigned.end(), 20, 50000);
+	//assigned.insert(assigned.end() - 2, vv.begin(), vv.end());
 	//assigned.push_back(1234);
 	it = assigned.begin();
 	int i = 1;
@@ -61,5 +62,14 @@ int main()
 	std::cout << "EMPTY = " << assigned.empty() << std::endl;
 	std::cout << "SIZE = " << assigned.size() << std::endl;
 	std::cout << "MAX_SIZE = " << assigned.max_size() << std::endl;
+	vv.swap(assigned);
+	vv.clear();
+	vv.push_back(5);
+	it = vv.begin();
+	while (it != vv.end())
+	{
+		std::cout << "VV = " << (*it) << std::endl;
+		it++;
+	}
 }
 

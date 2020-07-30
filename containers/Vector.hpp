@@ -26,7 +26,7 @@ class VectorIterator
 
 	//Constructors and Destructor
 	public:
-			VectorIterator(void) : array(nullptr) { }
+			VectorIterator(void) : array(NULL) { }
 			VectorIterator(pointer &array) : array(array) { }
 			VectorIterator(pointer const &array) : array(array) { }
 			VectorIterator(VectorIterator const &other) : array(other.array) { }
@@ -177,9 +177,41 @@ class Vector
 
 	public:
 	// Constructors and Destructor
-		Vector(void)
-			:array(nullptr), array_capacity(0), array_size(0)
+		Vector(void) :array(NULL), array_capacity(0), array_size(0) {}
+
+		Vector(size_type n, const value_type& val = value_type())
+			:array(NULL), array_capacity(0), array_size(0)
 		{
+			this->assign(n, val);
+		}
+
+		Vector (iterator first, iterator last)
+			:array(NULL), array_capacity(0), array_size(0)
+		{
+			this->assign(first, last);
+		}
+
+		Vector(Vector const &x)
+			:array(NULL), array_capacity(0), array_size(0)
+		{
+			this->assign(x.begin(), x.end());
+		}
+
+		~Vector()
+		{
+			this->erase(this->begin(), this->end());
+			delete this->array;
+			this->array_size = 0;
+			this->array_capacity = 0;
+			this->array = NULL;
+		}
+
+		Vector &operator=(Vector const &x)
+		{
+			this->erase(this->begin(), this->end());
+			this->assign(x.begin(), x.end());
+
+			return ((*this));
 		}
 
 	// Iterators
@@ -402,24 +434,54 @@ class Vector
 			while (position.getArray() != (&this->array[j]) && j != 0)
 				--j;
 			if (j + n >= this->array_capacity)
-				this->resize(j + n);
+				this->reserve(j + n);
 			else if (this->array_size + n >= this->array_capacity)
-				this->resize(this->array_size + n);
-			size_type lastIndex = this->array_size + n - 1;
-			size_type curIndex = this->array_size - 1;
+				this->reserve(this->array_size + n);
+			size_type lastIndex = this->array_size + n;
+			size_type curIndex = this->array_size;
 			while (j <= curIndex)
 			{
 				this->array[lastIndex] = this->array[curIndex];
+				if (curIndex == j)
+					break;
 				--lastIndex;
 				--curIndex;
 			}
-			while (j <= lastIndex)
+			while (j < lastIndex)
 			{
 				this->array[j] = val;
 				++j;
 			}
-			--j;
-			this->array_size = ((j > this->array_size) ? j : this->array_size + n);
+			this->array_size += n;
+		}
+
+		void insert (iterator position, iterator first, iterator last)
+		{
+			difference_type n = (last - first);
+			size_type j = this->array_capacity;
+			while (position.getArray() != (&this->array[j]) && j != 0)
+				--j;
+			if (j + n >= this->array_capacity)
+				this->reserve(j + n);
+			else if (this->array_size + n >= this->array_capacity)
+				this->reserve(this->array_size + n);
+			size_type lastIndex = this->array_size + n;
+			size_type curIndex = this->array_size;
+			while (j <= curIndex)
+			{
+				this->array[lastIndex] = this->array[curIndex];
+				if (curIndex == j)
+					break;
+				--lastIndex;
+				--curIndex;
+			}
+			while (first != last)
+			{
+				this->array[j] = (*first);
+				++first;
+				++j;
+			}
+			this->array_size += n;
 		}
 
 		iterator erase (iterator position)
@@ -459,9 +521,67 @@ class Vector
 			}
 			return (first);
 		}
+ 
+		void swap (Vector &x)
+		{
+			Vector<value_type> tmp;
 
-	// Operations :
+			tmp = (*this);
+			(*this) = x;
+			x = tmp;
+		}
 
-	// Helper functions
+		void clear()
+		{
+			this->erase(this->begin(), this->end());
+		}
 };
+
+template<T>
+bool &operator==(Vector<T> const &lhs, Vector<T> const &rhs)
+{
+	if (lhs.size() != rhs.size())
+		return (false);
+	for (int i = 0; i < lhs.size(); i++)
+	{
+		if (lhs.array[i] != rhs.array[i])
+			return (false);
+	}
+	return (true);
+}
+
+template<T>
+bool &operator<(Vector<T> const &lhs, Vector<T> const &rhs)
+{
+	for (int i = 0; i < lhs.size() && i < rhs.size(); i++)
+	{
+		if (lhs.array[i] < rhs.array[i])
+			return (true);
+	}
+	return (false);
+}
+
+template<T>
+bool &operator<=(Vector<T> const &lhs, Vector<T> const &rhs)
+{
+	return (!(rhs < lhs));
+}
+
+template<T>
+bool &operator>(Vector<T> const &lhs, Vector<T> const &rhs)
+{
+	return (rhs < lhs);
+}
+
+template<T>
+bool &operator>=(Vector<T> const &lhs, Vector<T> const &rhs)
+{
+	return (!(lhs < rhs));
+}
+
+template<T>
+void swap(Vector<T> &x, Vector<T> &y)
+{
+	x.swap(y);
+}
 }
